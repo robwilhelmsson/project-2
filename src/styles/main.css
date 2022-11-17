@@ -1,0 +1,33 @@
+main {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+section {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.container {
+  width: 350px;
+  flex-grow: 1;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+}
+
+img {
+  height: 150px;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  width: auto;
+}
+
+button {
+  margin-top: 3px;
+}

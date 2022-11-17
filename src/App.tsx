@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import Home from "./components/Home"
-import CountryShow from "./components/CountryShow"
+import CountryShow from "./components/FlagGuesser"
 
 function App() {
   return <Router>

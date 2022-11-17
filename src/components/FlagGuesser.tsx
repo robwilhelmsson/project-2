@@ -1,50 +1,27 @@
 import React, { useState, useEffect } from "react"
 import _ from 'lodash'
-
-interface ICountries {
-  name: Name
-  region: string
-  flags: Image
-  common: string
-}
-
-interface Name {
-  name: string
-  common: string
-}
-
-interface Image {
-  flags: string
-  png: string
-}
-
-type Country = Array<ICountries>
-
-interface IRandom {
-  flags: {
-    png: string
-  }
-  name: {
-    common: string
-  }
-}
-
-type Random = null | IRandom
+import { Country, Random } from "../interface/Interface"
 
 // ! Start of function
-function CountryShow() {
+function FlagGuesser() {
 
-  // ! State here, countries and random Country 
+  // ! State here, countries, random country & score
   const [countries, setCountries] = React.useState<Country>([])
   const [randomCountry, setRandomCountry] = React.useState<Random>(null)
+  const [score, setScore] = React.useState(0)
+  // console.log(score)
 
   // ! Fetch data from API
   async function fetchCountry() {
     const resp = await fetch(`https://restcountries.com/v3.1/all`)
     const countries = await resp.json()
-    setCountries(countries)
-    setRandomCountry(countries[Math.floor(Math.random() * countries.length)])
+    const filteredCountries = countries.filter((country: any) => {
+      return country.unMember
+    })
+    setCountries(filteredCountries)
+    setRandomCountry(filteredCountries[Math.floor(Math.random() * filteredCountries.length)])
   }
+
   // ! Keep this out of async function so it can be used in return
   useEffect(() => {
     fetchCountry()
@@ -72,30 +49,43 @@ function CountryShow() {
 
   // ! Function to show the answers
   function answersArray() {
+    const handleClick = (e: any) => {
+      if (e.target.value === randomCountryName) {
+        setScore(score + 1)
+        fetchCountry()
+      } else {
+        fetchCountry()
+      }
+    }
     return <>
-      <button onClick={fetchCountry}>{shuffleAnswers[0]}</button>
-      <button onClick={fetchCountry}>{shuffleAnswers[1]}</button>
-      <button onClick={fetchCountry}>{shuffleAnswers[2]}</button>
-      <button onClick={fetchCountry}>{shuffleAnswers[3]}</button>
+      <button onClick={handleClick} value={shuffleAnswers[0]}>{shuffleAnswers[0]}</button>
+      <button onClick={handleClick} value={shuffleAnswers[1]}>{shuffleAnswers[1]}</button>
+      <button onClick={handleClick} value={shuffleAnswers[2]}>{shuffleAnswers[2]}</button>
+      <button onClick={handleClick} value={shuffleAnswers[3]}>{shuffleAnswers[3]}</button>
     </>
   }
 
-  // function checkAnswers() {
-  //   if (randomCountryName === )
-  // }
 
   // ! The return with JSX 
   return (
-    <section className="section">
+    <section>
       <div className="container">
-        <img src={randomCountryFlag} alt={randomCountryName} />
+        <div>
+          <img src={randomCountryFlag} alt={randomCountryName} />
+        </div>
+        <div className="buttons">
+          {answersArray()}
+        </div>
       </div>
       <div className="container">
-        {answersArray()}
+        <div>
+          <h2>Current Score - {score}</h2>
+        </div>
       </div>
     </section>
+
   )
 
 }
 
-export default CountryShow
+export default FlagGuesser
