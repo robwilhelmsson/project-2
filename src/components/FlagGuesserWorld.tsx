@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react"
-import _, { random } from 'lodash'
+import _ from 'lodash'
 import { Country, Random } from "../interface/Interface"
+import { useParams } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 // ! Start of function
 function FlagGuesserWorld() {
@@ -13,9 +15,15 @@ function FlagGuesserWorld() {
   const [correctName, setCorrectName] = React.useState('')
   const [correctFlag, setCorrectFlag] = React.useState('')
 
+  const { region } = useParams()
+  console.log(region)
+  function checkRegion() {
+    return !region ? 'all' : `region/${region}`
+  }
+
   // ! Fetch data from API
   async function fetchInitialCountry() {
-    const resp = await fetch(`https://restcountries.com/v3.1/all`)
+    const resp = await fetch(`https://restcountries.com/v3.1/${checkRegion()}`)
     const countries = await resp.json()
     const filteredCountries = countries.filter((country: any) => {
       return country.unMember
@@ -104,6 +112,9 @@ function FlagGuesserWorld() {
           <h2>Current Score - {score}</h2>
           <h2>The answer was - {correctName} </h2>
           <img id="answerImg" src={correctFlag} alt={correctName} />
+          <Link to={"/"}>
+            Home
+          </Link>
         </div>
       </div>
     </section>
