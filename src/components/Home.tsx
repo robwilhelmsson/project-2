@@ -1,18 +1,38 @@
 import { Link } from "react-router-dom"
 
 function Home() {
+
+  function region(e: any) {
+    return e.target.value
+  }
+
   return (
-    <section className="hero is-fullheight-with-navbar is-warning">
-      <div className="hero-body">
-        <div className="container has-text-centered">
-          <p className="title is-1 has-text-centered has-text-black">
+    <section>
+      <div>
+          <p>
             Guess the Flag
           </p>
-          <Link to={"/flag-game"} className="button is-large">
-            Start!
+          <div className="continentButtons">
+          <Link to={"/flag-game-all"}>
+            World
           </Link>
+          <Link to={"/flag-game/:region"}>
+            Europe
+          </Link>
+          <Link to={"/flag-game/:region"}>
+            Americas
+          </Link>
+          <Link to={"/flag-game/:region"}>
+            Oceana
+          </Link>
+          <Link to={"/flag-game/:region"}>
+            Asia
+          </Link>
+          <Link to={"/flag-game/:region"}>
+            Africa
+          </Link>
+          </div>
         </div>
-      </div>
     </section>
   )
 }

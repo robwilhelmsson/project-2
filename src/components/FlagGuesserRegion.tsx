@@ -1,31 +1,46 @@
 import React, { useState, useEffect } from "react"
-import _ from 'lodash'
+import _, { random } from 'lodash'
 import { Country, Random } from "../interface/Interface"
 
 // ! Start of function
-function FlagGuesser() {
+function FlagGuesserRegion() {
 
   // ! State here, countries, random country & score
   const [countries, setCountries] = React.useState<Country>([])
+  const [remainingCountries, setRemainingCountries] = React.useState<Country>([])
   const [randomCountry, setRandomCountry] = React.useState<Random>(null)
   const [score, setScore] = React.useState(0)
-  // console.log(score)
+  const [correctName, setCorrectName] = React.useState('')
+  const [correctFlag, setCorrectFlag] = React.useState('')
 
   // ! Fetch data from API
-  async function fetchCountry() {
-    const resp = await fetch(`https://restcountries.com/v3.1/all`)
+  async function fetchInitialCountry() {
+    const resp = await fetch(`https://restcountries.com/v3.1/region/europe`)
     const countries = await resp.json()
     const filteredCountries = countries.filter((country: any) => {
       return country.unMember
     })
     setCountries(filteredCountries)
     setRandomCountry(filteredCountries[Math.floor(Math.random() * filteredCountries.length)])
+    setRemainingCountries(filteredCountries)
   }
 
   // ! Keep this out of async function so it can be used in return
   useEffect(() => {
-    fetchCountry()
+    fetchInitialCountry()
   }, [])
+
+  // ! Function to get a new random country and remove the old one from the array
+  function getRandomCountryAndRemove() {
+    const NewRandomCountry = remainingCountries[Math.floor(Math.random() * remainingCountries.length)]
+    const NewRemainingCountries = remainingCountries.filter((country) => {
+      return country !== NewRandomCountry
+    })
+    setRandomCountry(NewRandomCountry)
+    setRemainingCountries(NewRemainingCountries)
+    // console.log(NewRandomCountry)
+    // console.log(NewRemainingCountries)
+  }
 
   // ! While the page loads, show loading page otherwise everything breaks
   if (!randomCountry) {
@@ -42,20 +57,26 @@ function FlagGuesser() {
     const randomAnswer = countries[Math.floor(Math.random() * countries.length)]
     return randomAnswer.name.common
   }
+
   // ! Answers array and lodash method to shuffle the answers, 1 correct, 3 incorrect
   const answers = [randomCountryName, randomCountryAnswer(), randomCountryAnswer(), randomCountryAnswer()]
   const shuffleAnswers = _.shuffle(answers)
-  console.log(shuffleAnswers)
+  // console.log(shuffleAnswers)
 
   // ! Function to show the answers
   function answersArray() {
     const handleClick = (e: any) => {
       if (e.target.value === randomCountryName) {
+        setCorrectName(randomCountryName)
+        setCorrectFlag(randomCountryFlag)
         setScore(score + 1)
-        fetchCountry()
+        getRandomCountryAndRemove()
       } else {
-        fetchCountry()
+        setCorrectName(randomCountryName)
+        setCorrectFlag(randomCountryFlag)
+        getRandomCountryAndRemove()
       }
+      console.log(correctName)
     }
     return <>
       <button onClick={handleClick} value={shuffleAnswers[0]}>{shuffleAnswers[0]}</button>
@@ -79,7 +100,10 @@ function FlagGuesser() {
       </div>
       <div className="container">
         <div>
+          <h2>Flags remaining - {remainingCountries.length}</h2>
           <h2>Current Score - {score}</h2>
+          <h2>The answer was - {correctName} </h2>
+          <img id="answerImg" src={correctFlag} alt={correctName} />
         </div>
       </div>
     </section>
@@ -88,4 +112,4 @@ function FlagGuesser() {
 
 }
 
-export default FlagGuesser
+export default FlagGuesserRegion
