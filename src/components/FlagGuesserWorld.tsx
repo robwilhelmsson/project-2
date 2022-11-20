@@ -3,6 +3,7 @@ import _ from 'lodash'
 import { Country, Random } from "../interface/Interface"
 import { useParams } from "react-router-dom"
 import { Link } from "react-router-dom"
+import Results from "./Results"
 
 // ! Start of function
 function FlagGuesserWorld() {
@@ -14,9 +15,9 @@ function FlagGuesserWorld() {
   const [score, setScore] = React.useState(0)
   const [correctName, setCorrectName] = React.useState('')
   const [correctFlag, setCorrectFlag] = React.useState('')
+  const [count, setCount] = React.useState(0)
 
   const { region } = useParams()
-  console.log(region)
   function checkRegion() {
     return !region ? 'all' : `region/${region}`
   }
@@ -46,19 +47,22 @@ function FlagGuesserWorld() {
     })
     setRandomCountry(NewRandomCountry)
     setRemainingCountries(NewRemainingCountries)
-    // console.log(NewRandomCountry)
-    // console.log(NewRemainingCountries)
   }
 
   // ! While the page loads, show loading page otherwise everything breaks
-  if (!randomCountry) {
+  if (remainingCountries.length === 0) {
+    return <Results
+      score={score}
+      count={count}
+    />
+  } else if (!randomCountry) {
     return <p>Loading!</p>
   }
 
   // ! Get the random Country flag and name variables from data object
   const randomCountryFlag = randomCountry.flags.png
   const randomCountryName = randomCountry.name.common
-  console.log(randomCountryName)
+  // console.log(randomCountryName)
 
   // ! Function to produce random countries options other than correct answer
   function randomCountryAnswer() {
@@ -69,7 +73,6 @@ function FlagGuesserWorld() {
   // ! Answers array and lodash method to shuffle the answers, 1 correct, 3 incorrect
   const answers = [randomCountryName, randomCountryAnswer(), randomCountryAnswer(), randomCountryAnswer()]
   const shuffleAnswers = _.shuffle(answers)
-  // console.log(shuffleAnswers)
 
   // ! Function to show the answers
   function answersArray() {
@@ -78,46 +81,53 @@ function FlagGuesserWorld() {
         setCorrectName(randomCountryName)
         setCorrectFlag(randomCountryFlag)
         setScore(score + 1)
+        setCount(count + 1)
         getRandomCountryAndRemove()
       } else {
         setCorrectName(randomCountryName)
         setCorrectFlag(randomCountryFlag)
+        setCount(count + 1)
         getRandomCountryAndRemove()
       }
-      console.log(correctName)
     }
     return <>
-      <button onClick={handleClick} value={shuffleAnswers[0]}>{shuffleAnswers[0]}</button>
-      <button onClick={handleClick} value={shuffleAnswers[1]}>{shuffleAnswers[1]}</button>
-      <button onClick={handleClick} value={shuffleAnswers[2]}>{shuffleAnswers[2]}</button>
-      <button onClick={handleClick} value={shuffleAnswers[3]}>{shuffleAnswers[3]}</button>
+      <button onClick={handleClick} value={shuffleAnswers[0]} id="guess-button" className="button is-info is-small">{shuffleAnswers[0]}</button>
+      <button onClick={handleClick} value={shuffleAnswers[1]} id="guess-button" className="button is-info is-small">{shuffleAnswers[1]}</button>
+      <button onClick={handleClick} value={shuffleAnswers[2]} id="guess-button" className="button is-info is-small">{shuffleAnswers[2]}</button>
+      <button onClick={handleClick} value={shuffleAnswers[3]} id="guess-button" className="button is-info is-small">{shuffleAnswers[3]}</button>
     </>
   }
 
-
   // ! The return with JSX 
   return (
-    <section>
-      <div className="container">
+    <>
+
+      <section className="container">
         <div>
-          <img src={randomCountryFlag} alt={randomCountryName} />
-        </div>
-        <div className="buttons">
-          {answersArray()}
-        </div>
-      </div>
-      <div className="container">
-        <div>
-          <h2>Flags remaining - {remainingCountries.length}</h2>
-          <h2>Current Score - {score}</h2>
-          <h2>The answer was - {correctName} </h2>
-          <img id="answerImg" src={correctFlag} alt={correctName} />
-          <Link to={"/"}>
-            Home
+          <Link to={"/"} className="button is-small">
+            Main Menu
           </Link>
         </div>
-      </div>
-    </section>
+        <div className="container">
+          <div>
+            <img src={randomCountryFlag} alt={randomCountryName} />
+          </div>
+          <div id="answer-buttons" className="container">
+            {answersArray()}
+          </div>
+        </div>
+        <div id="answers-box" className="container">
+          <div className="container">
+            <h2>Flags remaining - {remainingCountries.length}</h2>
+            <h2>Current Score - {score}</h2>
+          </div>
+          <div id="correct-answer-container" className="container">
+            <h2>The answer was - {correctName} </h2>
+            <img id="answerImg" src={correctFlag} alt={correctName} />
+          </div>
+        </div>
+      </section>
+    </>
 
   )
 

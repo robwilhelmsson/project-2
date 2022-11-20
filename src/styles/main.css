@@ -1,5 +1,19 @@
+@import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
+
+
+body {
+  height: 100vh;
+  background-color: rgb(224, 224, 224);
+  background-image: url("src/assetts/PngItem_2247227.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* background-size: 230%; */
+}
+
 main {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   text-align: center;
 }
@@ -10,33 +24,57 @@ section {
   text-align: center;
 }
 
+.home-menu {
+  margin-top: 30px;
+}
+
 .container {
   width: 350px;
-  flex-grow: 1;
-  border: 1px solid black;
   display: flex;
   flex-direction: column;
+  margin-top: 20px;
+  border: none;
+}
+
+#cont-button {
+  margin: 10px;
+}
+
+#answer-buttons {
+  margin-top: 5px;
+}
+
+#guess-button {
+  height: 27px;
+  margin-top: 2px;
+}
+
+#guess-button:hover {
+/* color: black; */
+background-color: rgb(111, 169, 227) ;
+}
+
+#answers-box {
+  margin-top: 0;
 }
 
 img {
   width: 300px;
 }
 
+#correct-answer-container {
+  border: 2px solid rgb(146, 146, 146);
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #answerImg {
-  width: 170px;
+  width: 150px;
+  margin: 7px;
 }
 
-.continentButtons {
-  display: flex;
-  flex-direction: column;
-}
-
-.buttons {
-  display: flex;
-  flex-direction: column;
-  width: auto;
-}
-
-button {
-  margin-top: 3px;
+#results-container {
+  margin-top: 100px;
 }
