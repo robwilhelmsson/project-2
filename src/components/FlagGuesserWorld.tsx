@@ -49,13 +49,16 @@ function FlagGuesserWorld() {
     setRemainingCountries(NewRemainingCountries)
   }
 
-  // ! While the page loads, show loading page otherwise everything breaks
+  // ! Show Results page when there are no more countries to show
   if (remainingCountries.length === 0) {
     return <Results
       score={score}
       count={count}
     />
-  } else if (!randomCountry) {
+  }
+
+  // ! While the page loads, show loading page otherwise everything breaks
+  if (!randomCountry) {
     return <p>Loading!</p>
   }
 
